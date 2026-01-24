@@ -1469,11 +1469,15 @@
 async function subscribeNewsletter(e) {
     e.preventDefault();
     const form = e.target;
-    const emailValue = form.querySelector('input').value;
+    const emailInput = form.querySelector('input');
+    const emailValue = emailInput.value;
+
+    // We create the 'package' to send to Formspree
+    const formData = new FormData(form);
 
     const response = await fetch("https://formspree.io/f/xlgjvpok", {
         method: "POST",
-        body: new FormData(form),
+        body: formData, // Sending the bundle with the 'name' attribute
         headers: {
             'Accept': 'application/json'
         }
@@ -1483,7 +1487,8 @@ async function subscribeNewsletter(e) {
         alert(`Thank you! ${emailValue} has been added to the mailing list.`);
         form.reset();
     } else {
-        alert("Something went wrong. Please check if the email is correct and try again.");
+        // If it fails, we show a more helpful error
+        alert("Submission failed. Please make sure the email is valid or try again later.");
     }
 }
         
