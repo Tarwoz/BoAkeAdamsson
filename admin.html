@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Bo Åke Adamsson</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #D4AF37;
+            --gold-dim: rgba(212,175,55,0.15);
+            --dark: #0a0a0a;
+            --charcoal: #1a1a1a;
+            --panel: #111;
+            --border: rgba(255,255,255,0.08);
+            --text: #e8e8e8;
+            --muted: #666;
+            --green: #4ade80;
+            --red: #f87171;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── TOP BAR ── */
+        .topbar {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .topbar h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            background: var(--gold-dim);
+            color: var(--gold);
+            border: 1px solid rgba(212,175,55,0.3);
+            padding: 0.2rem 0.6rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-chip {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .stat-chip span {
+            color: var(--text);
+            font-weight: 400;
+        }
+
+        /* ── CONTROLS BAR ── */
+        .controls {
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border);
+            background: rgba(17,17,17,0.6);
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.4rem 1rem;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .spacer { flex: 1; }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .view-btn.active, .view-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ── EXPORT BUTTON ── */
+        .export-btn {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 0.45rem 1.2rem;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .export-btn:hover { opacity: 0.85; }
+
+        /* ── GRID VIEW ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5px;
+            padding: 1.5px;
+        }
+
+        .grid.hidden { display: none; }
+
+        .art-card {
+            background: var(--panel);
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .art-card:hover {
+            z-index: 2;
+            box-shadow: 0 0 0 1px var(--gold);
+        }
+
+        .art-card .img-wrap {
+            width: 100%;
+            height: 260px;
+            background: #1e1e1e;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .art-card .img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #1a1a1a;
+            transition: transform 0.4s;
+        }
+
+        .art-card:hover .img-wrap img {
+            transform: scale(1.03);
+        }
+
+        .no-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        .type-tag {
+            position: absolute;
+            top: 0.8rem;
+            left: 0.8rem;
+            background: rgba(0,0,0,0.75);
+            color: var(--gold);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            font-family: 'DM Mono', monospace;
+            backdrop-filter: blur(4px);
+        }
+
+        .id-tag {
+            position: absolute;
+            top: 0.8rem;
+            right: 0.8rem;
+            background: rgba(0,0,0,0.75);
+            color: var(--muted);
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            padding: 0.2rem 0.5rem;
+            font-family: 'DM Mono', monospace;
+            backdrop-filter: blur(4px);
+        }
+
+        .card-body {
+            padding: 1rem 1.2rem 1.2rem;
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── EDITABLE FIELDS ── */
+        .field-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .field-label {
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .field-input {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.35rem 0.6rem;
+            font-size: 0.85rem;
+            font-family: 'DM Mono', monospace;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(212,175,55,0.05);
+        }
+
+        .field-input.price-field {
+            color: var(--gold);
+        }
+
+        .field-input.changed {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .dim-hint {
+            font-size: 0.6rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── TABLE VIEW ── */
+        .table-wrap {
+            padding: 2rem;
+        }
+
+        .table-wrap.hidden { display: none; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        thead tr {
+            border-bottom: 1px solid var(--gold);
+        }
+
+        th {
+            text-align: left;
+            padding: 0.8rem 1rem;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-family: 'DM Mono', monospace;
+            font-weight: 400;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        td {
+            padding: 0.7rem 1rem;
+            vertical-align: middle;
+        }
+
+        td.thumb-cell {
+            width: 60px;
+        }
+
+        td.thumb-cell img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            background: #1a1a1a;
+            display: block;
+        }
+
+        td .t-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            color: var(--text);
+        }
+
+        td .t-type {
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'DM Mono', monospace;
+        }
+
+        td input.t-input {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.3rem 0.5rem;
+            font-size: 0.82rem;
+            font-family: 'DM Mono', monospace;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        td input.t-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(212,175,55,0.05);
+        }
+
+        td input.t-input.price-field { color: var(--gold); }
+        td input.t-input.changed { border-color: var(--green); color: var(--green); }
+
+        /* ── MODAL EXPORT ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 700px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: 1rem;
+            color: var(--gold);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close:hover { color: var(--text); }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .modal-body p {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .export-textarea {
+            width: 100%;
+            height: 300px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border);
+            color: #aaa;
+            padding: 1rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+        }
+
+        .copy-btn {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 0.5rem 1.4rem;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+        }
+
+        .cancel-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.5rem 1.4rem;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .cancel-btn:hover { border-color: var(--text); color: var(--text); }
+
+        .copy-confirm {
+            color: var(--green);
+            font-size: 0.8rem;
+            font-family: 'DM Mono', monospace;
+            align-self: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-confirm.show { opacity: 1; }
+
+        /* ── SAVED INDICATOR ── */
+        .saved-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--muted);
+            display: inline-block;
+            margin-left: 0.4rem;
+            transition: background 0.3s;
+        }
+
+        .saved-dot.changed { background: var(--gold); }
+
+        /* ── HELP NOTE ── */
+        .help-bar {
+            padding: 0.7rem 2rem;
+            background: rgba(212,175,55,0.05);
+            border-bottom: 1px solid rgba(212,175,55,0.1);
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .help-bar strong { color: var(--gold); font-weight: 400; }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-left">
+        <h1>Bo Åke Adamsson</h1>
+        <span class="badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+        <span class="stat-chip">Total artworks: <span id="total-count">—</span></span>
+        <span class="stat-chip">Changed: <span id="changed-count">0</span></span>
+    </div>
+</div>
+
+<!-- HELP BAR -->
+<div class="help-bar">
+    <strong>How to use:</strong> Edit prices (€) and measurements (H × W or H × W × D in cm) directly in the fields below. When done, click <strong>Export Updated Data</strong> and paste the result into your <strong>home.html</strong> file to replace the artworks array.
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="oil">Oil Paintings</button>
+    <button class="filter-btn" data-filter="graphics">Graphics / Litho</button>
+    <button class="filter-btn" data-filter="sculpture">Sculptures</button>
+    <div class="spacer"></div>
+    <div class="view-toggle">
+        <button class="view-btn active" id="grid-view-btn" title="Grid view">⊞</button>
+        <button class="view-btn" id="table-view-btn" title="Table view">☰</button>
+    </div>
+    <button class="export-btn" id="export-btn">Export Updated Data</button>
+</div>
+
+<!-- GRID VIEW -->
+<div class="grid" id="grid-container"></div>
+
+<!-- TABLE VIEW -->
+<div class="table-wrap hidden" id="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Title & Type</th>
+                <th>Year</th>
+                <th>Price (€)</th>
+                <th>Dimensions (cm)</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="export-modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>Export — Updated Artworks Data</h2>
+            <button class="modal-close" id="modal-close-btn">×</button>
+        </div>
+        <div class="modal-body">
+            <p>Copy everything below. In your <strong>home.html</strong> file, find the line that starts with <code>const artworks = [</code> and replace the entire array (from <code>[</code> to the closing <code>];</code>) with this.</p>
+            <textarea class="export-textarea" id="export-textarea" readonly></textarea>
+        </div>
+        <div class="modal-footer">
+            <span class="copy-confirm" id="copy-confirm">✓ Copied to clipboard!</span>
+            <button class="cancel-btn" id="modal-cancel-btn">Close</button>
+            <button class="copy-btn" id="copy-btn">Copy to Clipboard</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ─── DATA ─────────────────────────────────────────────────────────────────
+    const artworks = [
+        { id: 1, title: "Antibes", type: "oil", typeName: "Oil Painting", description: "Ethereal landscape capturing the mystical light of Scandinavian dusk", price: 34000, dimensions: "40 × 52", year: 2025, image: "images/antibbe.jpg" },
+        { id: 2, title: "Contornos Azules", type: "graphics", typeName: "Giclée", description: "Geometric abstraction merging analog and digital aesthetics", price: 500, dimensions: "63.5 × 77.5", year: 2024, image: "images/contornos-azules.jpg" },
+        { id: 3, title: "Existence", type: "sculpture", typeName: "Bronze Sculpture", description: "Minimalist form exploring the human silhouette in polished bronze", price: 7600, dimensions: "22 × 14 × 28", year: 2025, image: "images/existence.jpg" },
+        { id: 4, title: "Stora Gatan", type: "oil", typeName: "Oil Painting", description: "Urban landscape depicting the serene beauty of a Swedish winter morning", price: 38500, dimensions: "48 × 64", year: 2025, image: "images/stora-gatan.jpg" },
+        { id: 5, title: "Sundbyholms Slott", type: "graphics", typeName: "Litography", description: "Depicting Sundbyholms Castle in Sweden", price: 1100, dimensions: "90 × 70", year: 2014, image: "images/sundbyholms-slott.jpg" },
+        { id: 6, title: "Ballerina", type: "sculpture", typeName: "Bronze Sculpture", description: "Kinetic balance explored through industrial materials", price: 6200, dimensions: "38 × 26 × 50", year: 2000, image: "images/ballerina.jpg" },
+        { id: 7, title: "Café Opera", type: "oil", typeName: "Oil Painting", description: "The vibrant city life of Stockholm", price: 20500, dimensions: "36 × 48", year: 2017, image: "images/cafe-opera.jpg" },
+        { id: 8, title: "Tango", type: "graphics", typeName: "Litography", description: "Dynamic cityscape rendered in contemporary digital medium", price: 550, dimensions: "53 × 36", year: 2005, image: "images/tango-lito.jpg" },
+        { id: 9, title: "Connoisseur", type: "sculpture", typeName: "Bronze Sculpture", description: "Intertwined forms carved in Carrara marble", price: 5400, dimensions: "26 × 20 × 34", year: 2025, image: "images/connoisseur.jpg" },
+        { id: 10, title: "Czarownica", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 71000, dimensions: "26 × 20", year: 2025, image: "images/czarownica.jpg" },
+        { id: 11, title: "Circus", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 520, dimensions: "68.5 × 54.5", year: 2005, image: "images/circus-lito.jpg" },
+        { id: 12, title: "Bottle opener for Millionaires", type: "sculpture", typeName: "Bronze Sculpture", description: "Intertwined forms carved in Carrara marble", price: 7600, dimensions: "68.5 × 54.5 × 13", year: 2001, image: "images/bottle-opener-for-millionaires.jpg" },
+        { id: 13, title: "Skål!", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 41000, dimensions: "26 × 20", year: 2025, image: "images/skal.jpg" },
+        { id: 14, title: "Wodden Horse", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 600, dimensions: "26 × 20", year: 2005, image: "images/wodden-horse.jpg" },
+        { id: 15, title: "My Horse", type: "sculpture", typeName: "Bronze Sculpture", description: "Intertwined forms carved in Carrara marble", price: 7400, dimensions: "26 × 20 × 34", year: 2025, image: "images/my-horse.jpg" },
+        { id: 16, title: "Mercy", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 9000, dimensions: "26 × 20", year: 2015, image: "images/mercy.png" },
+        { id: 17, title: "Lovers", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 520, dimensions: "26 × 20", year: 2025, image: "images/lovers.jpg" },
+        { id: 18, title: "Bronze Doll", type: "sculpture", typeName: "Bronze Sculpture", description: "Intertwined forms carved in Carrara marble", price: 6700, dimensions: "26 × 20 × 34", year: 1995, image: "images/bronze-doll.jpg" },
+        { id: 19, title: "Lady Gaga", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 6500, dimensions: "26 × 20", year: 2025, image: "images/lady-gaga.png" },
+        { id: 20, title: "Longing", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 430, dimensions: "26 × 20", year: 2025, image: "images/longing.jpg" },
+        { id: 21, title: "Stroll", type: "sculpture", typeName: "Bronze Sculpture", description: "Intertwined forms carved in Carrara marble", price: 14000, dimensions: "26 × 20 × 34", year: 2000, image: "images/stroll.jpg" },
+        { id: 22, title: "Mother & Son", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 9700, dimensions: "26 × 20", year: 2025, image: "images/mother-son.png" },
+        { id: 23, title: "My life in eight pictures", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 1600, dimensions: "26 × 20", year: 2025, image: "images/my-life-in-eight-pictures.jpg" },
+        { id: 24, title: "Parignio", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 5400, dimensions: "26 × 20", year: 2025, image: "images/parignio.jpg" },
+        { id: 25, title: "Tango", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 43000, dimensions: "26 × 20", year: 2025, image: "images/tango-oil.jpg" },
+        { id: 26, title: "British Prince", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 12000, dimensions: "26 × 20", year: 2025, image: "images/british-prince.jpg" },
+        { id: 27, title: "The Golden Cloud", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 7900, dimensions: "26 × 20", year: 2025, image: "images/the-golden-cloud.jpg" },
+        { id: 28, title: "Ramblas del Flores", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 9500, dimensions: "26 × 20", year: 2025, image: "images/ramblas-del-flores.png" },
+        { id: 29, title: "Dolores", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 9000, dimensions: "26 × 20", year: 2025, image: "images/dolores.png" },
+        { id: 30, title: "Ethel", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 7900, dimensions: "26 × 20", year: 2025, image: "images/ethel.png" },
+        { id: 31, title: "Lady in Blue", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 8400, dimensions: "26 × 20", year: 2025, image: "images/lady-in-blue.png" },
+        { id: 32, title: "Katarinahissen", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 6400, dimensions: "26 × 20", year: 2025, image: "images/katarina-hissen.png" },
+        { id: 33, title: "Barcelona", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 8800, dimensions: "26 × 20", year: 2025, image: "images/barcelona.png" },
+        { id: 34, title: "Milano", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 7100, dimensions: "26 × 20", year: 2025, image: "images/milano.png" },
+        { id: 35, title: "Birds Flying High", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 12300, dimensions: "26 × 20", year: 2025, image: "images/birds-flying-high.jpg" },
+        { id: 36, title: "Blue", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 5200, dimensions: "26 × 20", year: 2025, image: "images/blue.png" },
+        { id: 37, title: "Relations", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 12300, dimensions: "26 × 20", year: 2025, image: "images/relations.png" },
+        { id: 38, title: "Rincon de Aragon", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 11400, dimensions: "26 × 20", year: 2025, image: "images/rincon-de-aragon.png" },
+        { id: 39, title: "Parapgrase Goya", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 44000, dimensions: "26 × 20", year: 2025, image: "images/paraphrase-goya.png" },
+        { id: 40, title: "Mi Esposa", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 4800, dimensions: "26 × 20", year: 2025, image: "images/mi-esposa.jpg" },
+        { id: 41, title: "Madrid", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 16500, dimensions: "26 × 20", year: 2025, image: "images/madrid.png" },
+        { id: 42, title: "Lady in Red", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 6700, dimensions: "26 × 20", year: 2025, image: "images/lady-in-red.png" },
+        { id: 43, title: "The Miner", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 43000, dimensions: "26 × 20", year: 2025, image: "images/the-miner.png" },
+        { id: 44, title: "Argentina", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 17000, dimensions: "26 × 20", year: 2025, image: "images/argentina.png" },
+        { id: 45, title: "Adam & Eve", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 18700, dimensions: "26 × 20", year: 2025, image: "images/adam-&-eve.jpg" },
+        { id: 46, title: "Ruins", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 9800, dimensions: "26 × 20", year: 2025, image: "images/ruins.png" },
+        { id: 47, title: "4th July", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 11200, dimensions: "26 × 20", year: 2025, image: "images/4th-july.png" },
+        { id: 48, title: "Ladies with Wine", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 14500, dimensions: "26 × 20", year: 2025, image: "images/ladies-with-wine.png" },
+        { id: 49, title: "First Date", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 13400, dimensions: "26 × 20", year: 2025, image: "images/first-date.png" },
+        { id: 50, title: "French Revolution", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 54000, dimensions: "26 × 20", year: 2025, image: "images/french-revolution.png" },
+        { id: 51, title: "Castelldefels", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 6400, dimensions: "26 × 20", year: 2025, image: "images/castelldefels.jpg" },
+        { id: 52, title: "Circus", type: "oil", typeName: "Oil Painting", description: "Intertwined forms carved in Carrara marble", price: 67000, dimensions: "26 × 20", year: 2025, image: "images/circus.jpg" },
+        { id: 53, title: "Adamsson", type: "graphics", typeName: "Book", description: "This book is more than just a catalogue of Adamsson's artworks. It is filled with stories and anecdotes that offer a deeper understanding of Adamsson as a person and an artist. Through a compelling biography, you will gain insight into his influences, inspirations, and the profound stories behind his most significant works.", price: 55, dimensions: "-", year: 2006, image: "images/adamsson-book.png" },
+        { id: 54, title: "OS Athen", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 780, dimensions: "80 × 66", year: 2025, image: "images/os-athen.jpg" },
+        { id: 55, title: "Moulin Rouge", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 380, dimensions: "36.5 × 28.5", year: 2025, image: "images/moulin-rouge.jpg" },
+        { id: 56, title: "Riche", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 610, dimensions: "59.5 × 45.5", year: 2025, image: "images/riche.jpg" },
+        { id: 57, title: "The Twins", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 480, dimensions: "41.5 × 31", year: 2025, image: "images/the-twins.jpg" },
+        { id: 58, title: "Lido", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 380, dimensions: "36.5 × 28.5", year: 2025, image: "images/lido.jpg" },
+        { id: 59, title: "Gästabud", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 750, dimensions: "50 × 65", year: 2025, image: "images/gastabud.jpg" },
+        { id: 60, title: "The Royal Graphic", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 650, dimensions: "46.5 × 58", year: 2025, image: "images/the-royal-graphic.jpg" },
+        { id: 61, title: "Almas Gemelas", type: "graphics", typeName: "Litography", description: "Intertwined forms carved in Carrara marble", price: 700, dimensions: "61 × 72.5", year: 2025, image: "images/almas-gemelas.jpg" }
+    ];
+
+    // Working copy — track edits
+    const edited = artworks.map(a => ({ ...a }));
+    const changedIds = new Set();
+
+    function markChanged(id) {
+        changedIds.add(id);
+        document.getElementById('changed-count').textContent = changedIds.size;
+    }
+
+    // ─── RENDER GRID ───────────────────────────────────────────────────────────
+    function renderGrid(filter) {
+        const container = document.getElementById('grid-container');
+        const filtered = filter === 'all' ? edited : edited.filter(a => a.type === filter);
+        container.innerHTML = filtered.map(art => `
+            <div class="art-card">
+                <div class="img-wrap">
+                    ${art.image ? `<img src="${art.image}" alt="${art.title}" loading="lazy">` : `<div class="no-img">NO IMAGE</div>`}
+                    <span class="type-tag">${art.typeName}</span>
+                    <span class="id-tag">#${art.id}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">${art.title}</div>
+
+                    <div class="field-row">
+                        <span class="field-label">Price €</span>
+                        <input
+                            class="field-input price-field"
+                            type="number"
+                            value="${art.price}"
+                            data-id="${art.id}"
+                            data-field="price"
+                            min="0"
+                        >
+                    </div>
+
+                    <div class="field-row">
+                        <span class="field-label">Dims (cm)</span>
+                        <div style="flex:1">
+                            <input
+                                class="field-input"
+                                type="text"
+                                value="${art.dimensions}"
+                                data-id="${art.id}"
+                                data-field="dimensions"
+                                placeholder="H × W  or  H × W × D"
+                            >
+                            <div class="dim-hint">${art.type === 'sculpture' ? 'H × W × D (depth)' : 'H × W'}</div>
+                        </div>
+                    </div>
+
+                    <div class="field-row">
+                        <span class="field-label">Year</span>
+                        <input
+                            class="field-input"
+                            type="number"
+                            value="${art.year}"
+                            data-id="${art.id}"
+                            data-field="year"
+                        >
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // attach listeners
+        container.querySelectorAll('.field-input').forEach(input => {
+            input.addEventListener('input', handleInput);
+        });
+    }
+
+    // ─── RENDER TABLE ──────────────────────────────────────────────────────────
+    function renderTable(filter) {
+        const tbody = document.getElementById('table-body');
+        const filtered = filter === 'all' ? edited : edited.filter(a => a.type === filter);
+        tbody.innerHTML = filtered.map(art => `
+            <tr>
+                <td class="thumb-cell">
+                    ${art.image ? `<img src="${art.image}" alt="${art.title}">` : ''}
+                </td>
+                <td style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted)">#${art.id}</td>
+                <td>
+                    <div class="t-title">${art.title}</div>
+                    <div class="t-type">${art.typeName} · ${art.year}</div>
+                </td>
+                <td>
+                    <input class="t-input" type="number" value="${art.year}" data-id="${art.id}" data-field="year" style="width:70px">
+                </td>
+                <td>
+                    <input class="t-input price-field" type="number" value="${art.price}" data-id="${art.id}" data-field="price" style="width:110px" min="0">
+                </td>
+                <td>
+                    <input class="t-input" type="text" value="${art.dimensions}" data-id="${art.id}" data-field="dimensions" style="width:160px" placeholder="${art.type === 'sculpture' ? 'H × W × D' : 'H × W'}">
+                </td>
+            </tr>
+        `).join('');
+
+        tbody.querySelectorAll('.t-input').forEach(input => {
+            input.addEventListener('input', handleInput);
+        });
+    }
+
+    // ─── INPUT HANDLER ─────────────────────────────────────────────────────────
+    function handleInput(e) {
+        const id = parseInt(e.target.dataset.id);
+        const field = e.target.dataset.field;
+        const raw = e.target.value;
+        const art = edited.find(a => a.id === id);
+        if (!art) return;
+
+        if (field === 'price' || field === 'year') {
+            art[field] = parseFloat(raw) || 0;
+        } else {
+            art[field] = raw;
+        }
+
+        e.target.classList.add('changed');
+        markChanged(id);
+    }
+
+    // ─── FILTER & VIEW ─────────────────────────────────────────────────────────
+    let currentFilter = 'all';
+    let currentView = 'grid';
+
+    document.getElementById('total-count').textContent = artworks.length;
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            if (currentView === 'grid') renderGrid(currentFilter);
+            else renderTable(currentFilter);
+        });
+    });
+
+    document.getElementById('grid-view-btn').addEventListener('click', function() {
+        currentView = 'grid';
+        this.classList.add('active');
+        document.getElementById('table-view-btn').classList.remove('active');
+        document.getElementById('grid-container').classList.remove('hidden');
+        document.getElementById('table-container').classList.add('hidden');
+        renderGrid(currentFilter);
+    });
+
+    document.getElementById('table-view-btn').addEventListener('click', function() {
+        currentView = 'table';
+        this.classList.add('active');
+        document.getElementById('grid-view-btn').classList.remove('active');
+        document.getElementById('table-container').classList.remove('hidden');
+        document.getElementById('grid-container').classList.add('hidden');
+        renderTable(currentFilter);
+    });
+
+    // ─── EXPORT ────────────────────────────────────────────────────────────────
+    document.getElementById('export-btn').addEventListener('click', function() {
+        const json = JSON.stringify(edited, null, 4);
+        document.getElementById('export-textarea').value = json;
+        document.getElementById('export-modal').classList.add('open');
+    });
+
+    document.getElementById('modal-close-btn').addEventListener('click', () => {
+        document.getElementById('export-modal').classList.remove('open');
+    });
+
+    document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+        document.getElementById('export-modal').classList.remove('open');
+    });
+
+    document.getElementById('copy-btn').addEventListener('click', function() {
+        const ta = document.getElementById('export-textarea');
+        navigator.clipboard.writeText(ta.value).then(() => {
+            const confirm = document.getElementById('copy-confirm');
+            confirm.classList.add('show');
+            setTimeout(() => confirm.classList.remove('show'), 2500);
+        });
+    });
+
+    // close modal on overlay click
+    document.getElementById('export-modal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    // ─── INIT ──────────────────────────────────────────────────────────────────
+    renderGrid('all');
+</script>
+</body>
+</html>
