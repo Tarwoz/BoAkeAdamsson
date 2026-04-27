@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bo Åke Adamsson — Contemporary Artist</title>
+    <meta name="description" content="Bo Åke Adamsson — Swedish painter, sculptor and graphic artist. Explore original oil paintings, bronze sculptures, and lithographs available for purchase.">
+    <meta name="keywords" content="Bo Åke Adamsson, Swedish artist, contemporary art, oil painting, bronze sculpture, lithography, art for sale">
+    <meta name="author" content="Bo Åke Adamsson">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Bo Åke Adamsson — Contemporary Artist">
+    <meta property="og:description" content="Swedish painter, sculptor and graphic artist. Original oil paintings, bronze sculptures, and lithographs available for purchase.">
+    <meta property="og:image" content="images/signature.png">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.boakeadamsson.com/">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #D4AF37;
+            --dark: #0a0a0a;
+            --charcoal: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --mid-gray: #666;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #ffffff;
+            color: var(--dark);
+            line-height: 1.8;
+        }
+
+        header {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        header:hover {
+            background: #1a1a1a;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, transparent 100%);
+        }
+
+        header img {
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            background: white;
+            padding: 0;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            flex-wrap: wrap;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 1.5rem 2.5rem;
+            transition: all 0.3s;
+            color: var(--dark);
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav button:hover,
+        nav button.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 5rem 3rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .art-card {
+            background: white;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+        }
+
+        .art-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            border-color: var(--gold);
+        }
+
+        .art-image {
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .art-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: white;
+            loading: lazy;
+        }
+
+        .art-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            transition: all 0.4s;
+            pointer-events: none;
+        }
+
+        .art-card:hover .art-image::after {
+            background: rgba(212,175,55,0.1);
+        }
+
+        .art-card:nth-child(3n+1) .art-image {
+            background: linear-gradient(135deg, #8B7355 0%, #6B5D52 100%);
+        }
+
+        .art-card:nth-child(3n+2) .art-image {
+            background: linear-gradient(135deg, #4A5568 0%, #2D3748 100%);
+        }
+
+        .art-card:nth-child(3n+3) .art-image {
+            background: linear-gradient(135deg, #5A4A3A 0%, #3A2A1A 100%);
+        }
+
+        .art-details {
+            padding: 2rem;
+            background: white;
+        }
+
+        .art-details h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .art-type {
+            display: inline-block;
+            color: var(--gold);
+            padding: 0;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .art-description {
+            color: var(--mid-gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .art-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .price {
+            font-size: 1.6rem;
+            color: var(--dark);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .buy-btn {
+            background: var(--dark);
+            color: white;
+            border: 2px solid var(--dark);
+            padding: 0.9rem 2.2rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .buy-btn:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--dark);
+        }
+
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #8B7355 0%, #6B5D52 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .about-text p {
+            color: var(--mid-gray);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 2;
+        }
+
+        .newsletter-section {
+            background: var(--light-gray);
+            padding: 4rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .newsletter-section h3 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .newsletter-section p {
+            color: var(--mid-gray);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            gap: 1rem;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .newsletter-form button {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .social-links a {
+            color: var(--dark);
+            font-size: 1.8rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .social-links a:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .video-section {
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .video-section h3 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .video-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #000;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 500px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-details {
+            padding: 3rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 2rem;
+            z-index: 10;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--gold);
+        }
+
+        .inquiry-form {
+            background: var(--light-gray);
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .submit-inquiry {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .submit-inquiry:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 6rem;
+        }
+
+        footer p {
+            opacity: 0.7;
+            margin: 0.5rem 0;
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 968px) {
+            header img {
+                max-width: 350px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-hero {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                gap: 0;
+            }
+
+            nav button {
+                padding: 1rem 1.5rem;
+                font-size: 0.8rem;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 3rem 1.5rem;
+            }
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 1.3rem;
+            color: var(--mid-gray);
+            border-left: 3px solid var(--gold);
+            padding-left: 2rem;
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header onclick="scrollToTop()" style="cursor: pointer;" title="Return to gallery">
+        <img src="images/signature.png" alt="Bo Åke Adamsson" style="max-width: 600px; width: 100%; height: auto; display: block; margin: 0 auto;">
+    </header>
+
+    <nav aria-label="Main navigation">
+        <ul>
+            <li><button class="nav-btn active" data-page="gallery">Gallery</button></li>
+            <li><button class="nav-btn" data-page="about">About</button></li>
+            <li><button class="nav-btn" data-page="oil">Oil Paintings</button></li>
+            <li><button class="nav-btn" data-page="graphics">Graphics</button></li>
+            <li><button class="nav-btn" data-page="sculpture">Sculptures</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div id="gallery-page" class="page active">
+            <div id="gallery" class="gallery-grid"></div>
+        </div>
+
+        <div id="about-page" class="page">
+            <div class="about-content">
+                <div class="about-hero">
+                    <div class="about-image">
+                        <img src="images/about-photo.jpg" alt="Bo Åke Adamsson" style="display: block;">
+                    </div>
+                    <div class="about-text">
+                        <h2>About the Artist</h2>
+                        <p>Bo Åke Adamsson — painter, sculptor and graphic artist from Sweden. He studied at the Real Academia de Bellas Artes in Barcelona from 1963 to 1973, and continued his education in bronze casting at the Royal Academy of Fine Arts in Stockholm in 1975, 1976 and 1977. He has exhibited in cities such as Stockholm, Paris, New York, Cannes, Barcelona and Copenhagen, and has shown alongside painters such as Picasso, Miró, Tàpies and many others. His art and sculptures are represented in collections including the Swedish National Art Museum, and in the personal collections of Gustaf VI Adolf, Carl XVI Gustaf, and the Sultan of Brunei.</p>
+                    </div>
+                </div>
+
+                <p class="quote">"Art is not what you see, but what you make others see." — Edgar Degas</p>
+
+                <p>He doesn't pass by unnoticed, Bo Åke Adamsson. He either shows up in a white linen suit, white shirt, and white laced shoes, looking every bit the role of the Skagen painter — but instead of a silk scarf, he has a tie with a dollar sign and he's sitting on a tractor. Or he gives a general "it's been a hard day's night" impression, but wearing a stetson hat that could have been given to him by the great Gatsby himself. Or he comes — and this has definitely happened — in a tailcoat and a T-shirt. An imposing man who looks shamelessly healthy, despite life on the wild side from time to time, and whose whole person emanates a liberating air of happy-go-luckiness.</p>
+
+                <p>A typified symbol of Bo — what would that be? The open arms, the warm hug, the guffaw? The big mouth going off on some kind of a story, as if the stories were fluttering around inside his head and he pulled one out at random before you even get a chance to say hello? You know that no one is as much fun to talk to as Bo, even if you never get a word in edgewise — which isn't the point, because it isn't time for talking, it's show time for the storyteller and you're just part of his entourage. He loves to play the part, and one thing leads to another.</p>
+
+                <div class="video-section">
+                    <h3>Artist at Work</h3>
+                    <div class="video-container">
+                        <video controls poster="images/video-poster.jpg">
+                            <source src="videos/studio-video.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+
+                <p>Bo Åke's works have been exhibited in galleries across Scandinavia and Europe, finding homes in private collections worldwide. Each piece represents a commitment to quality, authenticity, and artistic integrity.</p>
+
+                <div class="newsletter-section">
+                    <h3>Stay Connected</h3>
+                    <p>Subscribe to receive updates about new works, exhibitions, and exclusive offerings</p>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" name="email" placeholder="Your Email Address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+
+                <div style="text-align: center; margin-top: 4rem;">
+                    <h3 style="font-size: 1.5rem; font-weight: 300; margin-bottom: 2rem; letter-spacing: 2px;">Follow the Journey</h3>
+                    <div class="social-links">
+                        <a href="https://instagram.com/boakeadamsson" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="https://facebook.com/boakeadamsson" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                        <a href="https://youtube.com/@BoAkeAdamsson" target="_blank" rel="noopener noreferrer" title="YouTube" aria-label="YouTube">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                            </svg>
+                        </a>
+                        <a href="https://tiktok.com/@boakeadamsson" target="_blank" rel="noopener noreferrer" title="TikTok" aria-label="TikTok">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-label="Artwork detail">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()" aria-label="Close">×</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Bo Åke Adamsson. All rights reserved.</p>
+        <p>Contact: <a href="mailto:ba.adamsson@gmail.com">ba.adamsson@gmail.com</a></p>
+    </footer>
+
+    <script>
+        const artworks = [
+            {
+                id: 1,
+                title: "Antibes",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 34000,
+                dimensions: "70 × 81 cm",
+                year: 2019,
+                image: "images/antibbe.jpg"
+            },
+            {
+                id: 2,
+                title: "Contornos Azules",
+                type: "graphics",
+                typeName: "Giclée",
+                description: "",
+                price: 500,
+                dimensions: "63.5 × 77.5 cm",
+                year: 2024,
+                image: "images/contornos-azules.jpg"
+            },
+            {
+                id: 3,
+                title: "Existence",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 8300,
+                dimensions: "22 × 14 × 28 cm",
+                year: 1995,
+                image: "images/existence.jpg"
+            },
+            {
+                id: 4,
+                title: "Stora Gatan",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 56000,
+                dimensions: "120 × 140 cm",
+                year: 2022,
+                image: "images/stora-gatan.jpg"
+            },
+            {
+                id: 5,
+                title: "Sundbyholms Slott",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 1700,
+                dimensions: "83 × 68 cm",
+                year: 2014,
+                image: "images/sundbyholms-slott.jpg"
+            },
+            {
+                id: 6,
+                title: "Ballerina",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 6400,
+                dimensions: "32 × 26 × 50 cm",
+                year: 1981,
+                image: "images/ballerina.jpg"
+            },
+            {
+                id: 7,
+                title: "Café Opera",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 20500,
+                dimensions: "142 × 112 cm",
+                year: 2017,
+                image: "images/cafe-opera.jpg"
+            },
+            {
+                id: 8,
+                title: "Tango",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 550,
+                dimensions: "53 × 36 cm",
+                year: 2005,
+                image: "images/tango-lito.jpg"
+            },
+            {
+                id: 9,
+                title: "Connoisseur",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 4200,
+                dimensions: "14 × 5 × 4 cm",
+                year: 1980,
+                image: "images/connoisseur.jpg"
+            },
+            {
+                id: 10,
+                title: "Czarownica",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: ""The Witch\" in Polish — a dramatic figurative composition exploring the wild, autonomous feminine. Dark energy pulses through the paint, equal parts menace and magnetic beauty.",
+                price: 71000,
+                dimensions: "109 × 90 cm",
+                year: 2025,
+                image: "images/czarownica.jpg"
+            },
+            {
+                id: 11,
+                title: "Circus",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 520,
+                dimensions: "68.5 × 54.5 cm",
+                year: 2005,
+                image: "images/circus-lito.jpg"
+            },
+            {
+                id: 12,
+                title: "Bottle Opener for Millionaires",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 6700,
+                dimensions: "14 × 54.5 × 13 cm",
+                year: 1981,
+                image: "images/bottle-opener-for-millionaires.jpg"
+            },
+            {
+                id: 13,
+                title: "Skål!",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: ""Cheers!\" — a monumental canvas brimming with the joy of the Swedish toast. Raised glasses, warm company, and the particular euphoria of a celebration that has been thoroughly earned.",
+                price: 41000,
+                dimensions: "180 × 140 cm",
+                year: 2025,
+                image: "images/skal.jpg"
+            },
+            {
+                id: 14,
+                title: "Wooden Horse",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 870,
+                dimensions: "26 × 20 cm",
+                year: 2005,
+                image: "images/wodden-horse.jpg"
+            },
+            {
+                id: 15,
+                title: "My Horse",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 38500,
+                dimensions: "17.5 × 22 × 4 cm",
+                year: 1978,
+                image: "images/my-horse.jpg"
+            },
+            {
+                id: 16,
+                title: "Mercy",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 9000,
+                dimensions: "62 × 63 cm",
+                year: 2015,
+                image: "images/mercy.png"
+            },
+            {
+                id: 17,
+                title: "Lovers",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 520,
+                dimensions: "26 × 20 cm",
+                year: 2009,
+                image: "images/lovers.jpg"
+            },
+            {
+                id: 18,
+                title: "Bronze Doll",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 11500,
+                dimensions: "15 × 9 × 7 cm",
+                year: 1978,
+                image: "images/bronze-doll.jpg"
+            },
+            {
+                id: 19,
+                title: "Lady Gaga",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 2000,
+                dimensions: "65 × 50 cm",
+                year: 2022,
+                image: "images/lady-gaga.png"
+            },
+            {
+                id: 20,
+                title: "Longing",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 425,
+                dimensions: "26 × 20 cm",
+                year: 2009,
+                image: "images/longing.jpg"
+            },
+            {
+                id: 21,
+                title: "Stroll",
+                type: "sculpture",
+                typeName: "Bronze Sculpture",
+                description: "",
+                price: 14000,
+                dimensions: "17 × 20 × 34 cm",
+                year: 1978,
+                image: "images/stroll.jpg"
+            },
+            {
+                id: 22,
+                title: "Mother & Son",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 3200,
+                dimensions: "94 × 52 cm",
+                year: 2021,
+                image: "images/mother-son.png"
+            },
+            {
+                id: 23,
+                title: "My Life in Eight Pictures",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 1600,
+                dimensions: "26 × 20 cm",
+                year: 1997,
+                image: "images/my-life-in-eight-pictures.jpg"
+            },
+            {
+                id: 24,
+                title: "Parignio",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 5400,
+                dimensions: "140 × 120 cm",
+                year: 2025,
+                image: "images/parignio.jpg"
+            },
+            {
+                id: 25,
+                title: "Tango",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 43000,
+                dimensions: "190 × 120 cm",
+                year: 2025,
+                image: "images/tango-oil.jpg"
+            },
+            {
+                id: 26,
+                title: "British Prince",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 14500,
+                dimensions: "171 × 141 cm",
+                year: 2025,
+                image: "images/british-prince.jpg"
+            },
+            {
+                id: 27,
+                title: "The Golden Cloud",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 7900,
+                dimensions: "153 × 130 cm",
+                year: 2025,
+                image: "images/the-golden-cloud.jpg"
+            },
+            {
+                id: 28,
+                title: "Ramblas del Flores",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 4300,
+                dimensions: "53 × 45 cm",
+                year: 2014,
+                image: "images/ramblas-del-flores.png"
+            },
+            {
+                id: 29,
+                title: "Dolores",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 2700,
+                dimensions: "41 × 34 cm",
+                year: 2012,
+                image: "images/dolores.png"
+            },
+            {
+                id: 30,
+                title: "Ethel",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 4000,
+                dimensions: "79 × 54 cm",
+                year: 2020,
+                image: "images/ethel.png"
+            },
+            {
+                id: 31,
+                title: "Lady in Blue",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 4100,
+                dimensions: "84 × 67 cm",
+                year: 2022,
+                image: "images/lady-in-blue.png"
+            },
+            {
+                id: 32,
+                title: "Katarinahissen",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 1800,
+                dimensions: "43 × 35 cm",
+                year: 2025,
+                image: "images/katarina-hissen.png"
+            },
+            {
+                id: 33,
+                title: "Barcelona",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 8800,
+                dimensions: "50 × 42 cm",
+                year: 2016,
+                image: "images/barcelona.png"
+            },
+            {
+                id: 34,
+                title: "Milano",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 4000,
+                dimensions: "92 × 42 cm",
+                year: 2025,
+                image: "images/milano.png"
+            },
+            {
+                id: 35,
+                title: "Birds Flying High",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 12300,
+                dimensions: "",
+                year: 2016,
+                image: "images/birds-flying-high.jpg"
+            },
+            {
+                id: 36,
+                title: "Blue",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 5200,
+                dimensions: "",
+                year: 2025,
+                image: "images/blue.png"
+            },
+            {
+                id: 37,
+                title: "Relations",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 4500,
+                dimensions: "84 × 62 cm",
+                year: 2020,
+                image: "images/relations.png"
+            },
+            {
+                id: 38,
+                title: "Rincón de Aragón",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: ""Corner of Aragon\" — a landscape capturing the austere beauty of inland Spain, its stony fields and vast skies painted with the directness of someone who has looked at this country without sentimentality.",
+                price: 14000,
+                dimensions: "82 × 102 cm",
+                year: 2020,
+                image: "images/rincon-de-aragon.png"
+            },
+            {
+                id: 39,
+                title: "Paraphrase Goya",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 31000,
+                dimensions: "",
+                year: 2025,
+                image: "images/paraphrase-goya.png"
+            },
+            {
+                id: 40,
+                title: "Mi Esposa",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: ""My Wife\" in Spanish — a portrait of the most personal kind, painted with the particular tenderness that comes from knowing your subject more completely than any sitting could provide.",
+                price: 4800,
+                dimensions: "",
+                year: 2025,
+                image: "images/mi-esposa.jpg"
+            },
+            {
+                id: 41,
+                title: "Madrid",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 8000,
+                dimensions: "36 × 31.5 cm",
+                year: 2013,
+                image: "images/madrid.png"
+            },
+            {
+                id: 42,
+                title: "Lady in Red",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 6700,
+                dimensions: "30 × 20 cm",
+                year: 2016,
+                image: "images/lady-in-red.png"
+            },
+            {
+                id: 43,
+                title: "The Miner",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 4500,
+                dimensions: "50 × 62 cm",
+                year: 2024,
+                image: "images/the-miner.png"
+            },
+            {
+                id: 44,
+                title: "Argentina",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 8000,
+                dimensions: "47 × 39 cm",
+                year: 2013,
+                image: "images/argentina.png"
+            },
+            {
+                id: 45,
+                title: "Adam & Eve",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 18700,
+                dimensions: "",
+                year: 2025,
+                image: "images/adam-&-eve.jpg"
+            },
+            {
+                id: 46,
+                title: "Ruins",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 9800,
+                dimensions: "",
+                year: 2025,
+                image: "images/ruins.png"
+            },
+            {
+                id: 47,
+                title: "4th July",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 11200,
+                dimensions: "",
+                year: 2025,
+                image: "images/4th-july.png"
+            },
+            {
+                id: 48,
+                title: "Ladies with Wine",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 14500,
+                dimensions: "",
+                year: 2025,
+                image: "images/ladies-with-wine.png"
+            },
+            {
+                id: 49,
+                title: "First Date",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 3400,
+                dimensions: "75 × 62 cm",
+                year: 1969,
+                image: "images/first-date.png"
+            },
+            {
+                id: 50,
+                title: "French Revolution",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 5400,
+                dimensions: "",
+                year: 2025,
+                image: "images/french-revolution.png"
+            },
+            {
+                id: 51,
+                title: "Castelldefels",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 640,
+                dimensions: "26 × 20 cm",
+                year: 2014,
+                image: "images/castelldefels.jpg"
+            },
+            {
+                id: 52,
+                title: "Circus",
+                type: "oil",
+                typeName: "Oil Painting",
+                description: "",
+                price: 9000,
+                dimensions: "144 × 75 cm",
+                year: 2021,
+                image: "images/circus.jpg"
+            },
+            {
+                id: 53,
+                title: "Adamsson",
+                type: "graphics",
+                typeName: "Book",
+                description: "",
+                price: 45,
+                dimensions: "—",
+                year: 2006,
+                image: "images/adamsson-book.png"
+            },
+            {
+                id: 54,
+                title: "OS Athen",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 780,
+                dimensions: "80 × 66 cm",
+                year: 2004,
+                image: "images/os-athen.jpg"
+            },
+            {
+                id: 55,
+                title: "Moulin Rouge",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 380,
+                dimensions: "36.5 × 28.5 cm",
+                year: 2015,
+                image: "images/moulin-rouge.jpg"
+            },
+            {
+                id: 56,
+                title: "Riche",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 770,
+                dimensions: "59.5 × 45.5 cm",
+                year: 2004,
+                image: "images/riche.jpg"
+            },
+            {
+                id: 57,
+                title: "The Twins",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 480,
+                dimensions: "41.5 × 31 cm",
+                year: 2000,
+                image: "images/the-twins.jpg"
+            },
+            {
+                id: 58,
+                title: "Lido",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 380,
+                dimensions: "36.5 × 28.5 cm",
+                year: 2015,
+                image: "images/lido.jpg"
+            },
+            {
+                id: 59,
+                title: "Gästabud",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: ""Feast\" — a celebratory lithograph capturing the abundance and warmth of the Swedish gathering at table. Raised cups, generous portions, and the noise of a party that has been going for some time.",
+                price: 750,
+                dimensions: "50 × 65 cm",
+                year: 2007,
+                image: "images/gastabud.jpg"
+            },
+            {
+                id: 60,
+                title: "The Royal Graphic",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: "",
+                price: 650,
+                dimensions: "46.5 × 58 cm",
+                year: 2013,
+                image: "images/the-royal-graphic.jpg"
+            },
+            {
+                id: 61,
+                title: "Almas Gemelas",
+                type: "graphics",
+                typeName: "Lithograph",
+                description: ""Twin Souls\" in Spanish — a lyrical dual-figure composition in which two forms reach toward one another across the surface of the print. The lithographic medium suits this meditation on affinity perfectly.",
+                price: 700,
+                dimensions: "61 × 72.5 cm",
+                year: 2003,
+                image: "images/almas-gemelas.jpg"
+            }
+        ];
+
+        function priceDisplay(price) {
+            return price > 10000 ? 'Price on Request' : '€' + price.toLocaleString();
+        }
+
+        function renderGallery(filter = 'all') {
+            const gallery = document.getElementById('gallery');
+            const filtered = filter === 'all' ? artworks : artworks.filter(art => art.type === filter);
+
+            gallery.innerHTML = filtered.map(art => `
+                <div class="art-card" onclick="openModal(${art.id})" tabindex="0" role="button" aria-label="View details for ${art.title}" onkeypress="if(event.key==='Enter') openModal(${art.id})">
+                    <div class="art-image">
+                        ${art.image ? `<img src="${art.image}" alt="${art.title}" loading="lazy">` : `<span>${art.title}</span>`}
+                    </div>
+                    <div class="art-details">
+                        <span class="art-type">${art.typeName}</span>
+                        <h3>${art.title}</h3>
+                        <div class="art-meta">
+                            <span class="price">${priceDisplay(art.price)}</span>
+                            <button class="buy-btn" onclick="event.stopPropagation(); openModal(${art.id})">Inquire</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openModal(id) {
+            const art = artworks.find(a => a.id === id);
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+
+            const dimensionsLine = art.dimensions
+                ? `<p style="margin: 0.8rem 0;"><strong>Dimensions:</strong> ${art.dimensions}</p>`
+                : '';
+
+            modalBody.innerHTML = `
+                <div class="modal-image">
+                    ${art.image ? `<img src="${art.image}" alt="${art.title}">` : `<span>${art.title}</span>`}
+                </div>
+                <div class="modal-details">
+                    <span class="art-type">${art.typeName}</span>
+                    <h2 style="font-size: 2.2rem; font-weight: 300; margin-bottom: 1rem; letter-spacing: 2px;">${art.title}</h2>
+                    ${dimensionsLine}
+                    <p style="margin: 0.8rem 0;"><strong>Year:</strong> ${art.year}</p>
+                    <p style="margin: 0.8rem 0;"><strong>Medium:</strong> ${art.typeName}</p>
+                    <p style="margin: 0.8rem 0; font-size: 1.4rem; color: var(--dark);"><strong>Price:</strong> ${priceDisplay(art.price)}</p>
+
+                    <form class="inquiry-form" onsubmit="submitInquiry(event, ${art.id})">
+                        <h3 style="margin-bottom: 1.5rem; font-weight: 300; letter-spacing: 1px;">Inquire About This Work</h3>
+
+                        <div class="form-group">
+                            <label>Artwork</label>
+                            <input type="text" value="${art.title}" readonly style="background: #f9f9f9;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Your Name *</label>
+                            <input type="text" name="name" required placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" name="email" required placeholder="your.email@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message (Optional)</label>
+                            <textarea name="message" placeholder="Please share any questions or additional information about your interest in this work..."></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-inquiry">Send Inquiry</button>
+                    </form>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function submitInquiry(e, artId) {
+            e.preventDefault();
+            const art = artworks.find(a => a.id === artId);
+            const form = e.target;
+            const submitBtn = form.querySelector('.submit-inquiry');
+
+            submitBtn.innerText = "Sending...";
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+            formData.append('Artwork_Title', art.title);
+
+            try {
+                const response = await fetch("https://formspree.io/f/xlgjvpkk", {
+                    method: "POST",
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    alert(`Thank you! Your inquiry about "${art.title}" has been sent. We will be in touch shortly.`);
+                    closeModal();
+                } else {
+                    alert("Oops! There was a problem. Please try again or email ba.adamsson@gmail.com directly.");
+                    submitBtn.innerText = "Send Inquiry";
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                alert("Network error. Please check your connection and try again.");
+                submitBtn.innerText = "Send Inquiry";
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function subscribeNewsletter(e) {
+            e.preventDefault();
+            const form = e.target;
+            const emailInput = form.querySelector('input');
+            const emailValue = emailInput.value;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("https://formspree.io/f/xwvlzyvr", {
+                    method: "POST",
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    alert(`Thank you! ${emailValue} has been added to the list.`);
+                    form.reset();
+                } else {
+                    alert("Something went wrong. Please check your connection and try again.");
+                }
+            } catch (error) {
+                alert("Network error. Please try again later.");
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-page="gallery"]').classList.add('active');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('gallery-page').classList.add('active');
+            renderGallery('all');
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const page = this.dataset.page;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+                if (page === 'about') {
+                    document.getElementById('about-page').classList.add('active');
+                } else {
+                    document.getElementById('gallery-page').classList.add('active');
+                    renderGallery(page === 'gallery' ? 'all' : page);
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Close modal on backdrop click
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) closeModal();
+        };
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialise gallery
+        renderGallery('all');
+    </script>
+</body>
+</html>
