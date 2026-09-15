@@ -1,6 +1,6 @@
 # boakeadamsson.com
 
-The website of Bo Åke Adamsson — Swedish painter, sculptor and graphic artist.
+The website of Bo Åke Adamsson, Swedish painter, sculptor and graphic artist.
 A static site, served by GitHub Pages from the repository root.
 
 ## How it fits together
@@ -22,7 +22,7 @@ Generated, and safe to delete and rebuild: `index.html`, `404.html`, `sitemap.xm
 ## Everyday tasks
 
 **Change a price, dimension or year.** Open `/admin.html` on the live site (or over a
-local server — it will not work from a `file://` URL), edit, hit Export, save the result
+local server, since it will not work from a `file://` URL), edit, hit Export, save the result
 over `artworks.json`, then:
 
 ```sh
@@ -49,7 +49,7 @@ python3 -m http.server 8000     # then open http://localhost:8000
 
 ## About the images
 
-The original print masters — roughly 300 MB, 2,000–5,000px on a side — are **not** kept
+The original print masters, roughly 300 MB and 2,000 to 5,000px on a side, are **not** kept
 in the working tree. They remain in git history and can be recovered at any time:
 
 ```sh

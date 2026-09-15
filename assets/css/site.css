@@ -408,3 +408,10 @@ footer a.mail:hover{ text-decoration:underline; }
 
 /* ---------- empty state ---------- */
 .empty{ color:var(--stone); font-style:italic; font-family:var(--serif); font-size:1.15rem; }
+
+/* ---------- quote attribution ---------- */
+.pull-quote cite{
+    display:block; margin-top:0.7rem; font-style:normal; font-family:var(--sans);
+    font-size:0.74rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase;
+    color:var(--stone);
+}

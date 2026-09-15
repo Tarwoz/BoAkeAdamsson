@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Admin — Bo Åke Adamsson</title>
+    <title>Admin | Bo Åke Adamsson</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -557,14 +557,14 @@
         <span class="badge">Admin</span>
     </div>
     <div class="topbar-right">
-        <span class="stat-chip">Total artworks: <span id="total-count">—</span></span>
+        <span class="stat-chip">Total artworks: <span id="total-count">0</span></span>
         <span class="stat-chip">Changed: <span id="changed-count">0</span></span>
     </div>
 </div>
 
 <!-- HELP BAR -->
 <div class="help-bar">
-    <strong>How to use:</strong> Edit prices (€) and measurements (H × W or H × W × D in cm) directly in the fields below. When done, click <strong>Export Updated Data</strong> and paste the result into your <strong>home.html</strong> file to replace the artworks array.
+    <strong>How to use:</strong> Edit prices (€) and measurements (H × W or H × W × D in cm) directly in the fields below. When done, click <strong>Export Updated Data</strong>, save the result over <strong>artworks.json</strong> in the site root, then run the build script.
 </div>
 
 <!-- CONTROLS -->
@@ -605,11 +605,11 @@
 <div class="modal-overlay" id="export-modal">
     <div class="modal-box">
         <div class="modal-header">
-            <h2>Export — Updated Artworks Data</h2>
+            <h2>Export: updated artworks data</h2>
             <button class="modal-close" id="modal-close-btn">×</button>
         </div>
         <div class="modal-body">
-            <p>Copy everything below and save it as <strong>artworks.json</strong> in the site root, replacing the existing file. Then run <code>python3 tools/build.py</code> and commit — that regenerates every page, the sitemap and the structured data.</p>
+            <p>Copy everything below and save it as <strong>artworks.json</strong> in the site root, replacing the existing file. Then run <code>python3 tools/build.py</code> and commit. That regenerates every page, the sitemap and the structured data.</p>
             <p style="color:var(--muted);font-size:0.85rem;">Adding a brand new artwork? Drop its image into <code>images/</code>, add an entry here with a unique <code>id</code> and <code>slug</code>, then run <code>python3 tools/optimise_images.py</code> before the build.</p>
             <textarea class="export-textarea" id="export-textarea" readonly></textarea>
         </div>
@@ -627,7 +627,7 @@
     // so this editor can never drift out of sync with what is published.
     let artworks = [];
 
-    // Working copy — track edits
+    // Working copy, tracking edits
     let edited = [];
     const changedIds = new Set();
 
@@ -829,9 +829,9 @@
         .catch(err => {
             document.getElementById('grid-container').innerHTML =
                 '<p style="color:var(--red);padding:2rem;">Could not load artworks.json (' +
-                err.message + '). This page has to be opened over http:// — ' +
+                err.message + '). This page has to be opened over http://, ' +
                 'from the live site, or from a local server such as ' +
-                '<code>python3 -m http.server</code> — not as a file:// URL.</p>';
+                '<code>python3 -m http.server</code>, not as a file:// URL.</p>';
         });
 </script>
 </body>
