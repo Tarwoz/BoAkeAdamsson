@@ -315,7 +315,7 @@ def home_body(artworks, manifest, active, hero):
 </section>
 
 <section class="section" style="padding-bottom:2.5rem;">
-    <p class="intro-line">A body of work built on <em>bravado and tenderness</em> in equal measure — this collection holds the pieces currently available to acquire, each shown at its true proportions.</p>
+    <p class="intro-line">A body of work built on <em>bravado and tenderness</em> in equal measure — this collection holds the pieces currently available to acquire, each photographed in the studio where it was made.</p>
 </section>
 """
 
@@ -327,7 +327,7 @@ def home_body(artworks, manifest, active, hero):
             <div class="eyebrow">The Collection</div>
             <h2 id="collection-title">{title}</h2>
         </div>
-        <p>Every piece is catalogued with its true dimensions and comes directly from the artist's studio. Click any work to see it in full and inquire.</p>
+        <p>Every piece comes directly from the artist's studio, catalogued with its medium, year and — where they have been recorded — its measurements. Click any work to see it in full and inquire.</p>
     </div>
     {filter_bar(active, counts)}
     <div id="gallery" class="gallery">
@@ -389,8 +389,9 @@ def work_body(art, rec, prev, nxt):
     p = price_display(art["price"], art["type"])
     on_request = p == "Price on Request"
     rows = [("Medium", art["typeName"])]
-    if art["dimensions"] and art["dimensions"] != "—":
-        rows.append(("Dimensions", art["dimensions"]))
+    rows.append(("Dimensions", art["dimensions"]
+                 if art["dimensions"] and art["dimensions"] != "—"
+                 else "On request"))
     rows.append(("Year", str(art["year"])))
     specs = "".join(
         f'<div class="spec-row"><span class="k">{k}</span><span class="v">{e(v)}</span></div>'
@@ -431,7 +432,7 @@ def work_body(art, rec, prev, nxt):
     <section class="section" id="collection" style="padding-top:4rem;">
         <div class="section-head">
             <div><div class="eyebrow">The Collection</div><h2 id="collection-title">Selected Works</h2></div>
-            <p>Every piece is catalogued with its true dimensions and comes directly from the artist's studio.</p>
+            <p>Every piece comes directly from the artist's studio, catalogued with its medium, year and measurements.</p>
         </div>
         <div class="filter-bar" role="group" aria-label="Filter artworks"></div>
         <div id="gallery" class="gallery"></div>
@@ -469,7 +470,7 @@ def about_body(manifest):
     <section class="section" id="collection" style="padding-top:4rem;">
         <div class="section-head">
             <div><div class="eyebrow">The Collection</div><h2 id="collection-title">Selected Works</h2></div>
-            <p>Every piece is catalogued with its true dimensions and comes directly from the artist's studio.</p>
+            <p>Every piece comes directly from the artist's studio, catalogued with its medium, year and measurements.</p>
         </div>
         <div class="filter-bar" role="group" aria-label="Filter artworks"></div>
         <div id="gallery" class="gallery"></div>
@@ -613,7 +614,7 @@ def main():
                 "oil paintings, bronze sculptures, and lithographs available for purchase directly "
                 "from the artist's studio." if is_home else
                 f"{label} by Swedish artist Bo Åke Adamsson, available directly from the studio. "
-                f"Each work catalogued with its true dimensions, medium and year.")
+                f"Each work catalogued with its medium, year and measurements.")
         ld = [PERSON] if is_home else [breadcrumbs([("Gallery", "/"), (label, path)])]
         if is_home:
             ld.append({
