@@ -102,8 +102,10 @@ def main():
                      f"{'...' if len(missing) > 4 else ''}")
 
     # Not failures, but worth surfacing: the catalogue is incomplete here.
+    # A book is not a gap; its page omits the dimensions row entirely.
     unmeasured = [w for w in works
-                  if not w["dimensions"].strip(" ‐‑‒–—―-")]
+                  if w["typeName"] != "Book"
+                  and not w["dimensions"].strip(" ‐‑‒–—―-")]
     if unmeasured:
         notes.append(f"{len(unmeasured)} work(s) have no recorded measurements and "
                      f'show "On request": '

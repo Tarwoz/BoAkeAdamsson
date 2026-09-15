@@ -40,6 +40,15 @@
         return !!(d && d.replace(/[\s\u2010-\u2015-]/g, '') !== '');
     }
 
+    /* A book has dimensions, but nobody asks a studio for them, so an
+       unanswered "On request" there is noise rather than an invitation.
+       Artworks are the other way round: a missing size is a real question. */
+    var UNMEASURED_TYPES = { 'Book': true };
+
+    function wantsSizeRow(art) {
+        return hasSize(art.dimensions) || !UNMEASURED_TYPES[art.typeName];
+    }
+
     function priceDisplay(price, type) {
         if (type === 'sculpture' || price > 10000) return 'Price on Request';
         return '€' + price.toLocaleString('en-US');
@@ -194,7 +203,9 @@
         var onRequest = p === 'Price on Request';
         var rows = [['Medium', art.typeName]];
         // Not every work has a recorded size; say so rather than drop the row.
-        rows.push(['Dimensions', hasSize(art.dimensions) ? art.dimensions : 'On request']);
+        if (wantsSizeRow(art)) {
+            rows.push(['Dimensions', hasSize(art.dimensions) ? art.dimensions : 'On request']);
+        }
         rows.push(['Year', art.year]);
         var specRows = rows.map(function (kv) {
             return '<div class="spec-row"><span class="k">' + kv[0] + '</span>' +

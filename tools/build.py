@@ -75,6 +75,16 @@ SIZES_SPLIT = "(max-width:900px) 92vw, 40vw"
 e = html.escape
 
 
+# A book has dimensions, but nobody asks a studio for them, so an unanswered
+# "On request" there is noise rather than an invitation. Artworks are the other
+# way round: a missing size is a real question for a buyer.
+UNMEASURED_TYPES = {"Book"}
+
+
+def wants_size_row(work):
+    return has_size(work["dimensions"]) or work["typeName"] not in UNMEASURED_TYPES
+
+
 def has_size(d):
     """A dimensions field counts as recorded only if it holds more than a dash
     or a blank; the catalogue has used several placeholders over time."""
@@ -392,8 +402,9 @@ def work_body(art, rec, prev, nxt):
     p = price_display(art["price"], art["type"])
     on_request = p == "Price on Request"
     rows = [("Medium", art["typeName"])]
-    rows.append(("Dimensions",
-                 art["dimensions"] if has_size(art["dimensions"]) else "On request"))
+    if wants_size_row(art):
+        rows.append(("Dimensions",
+                     art["dimensions"] if has_size(art["dimensions"]) else "On request"))
     rows.append(("Year", str(art["year"])))
     specs = "".join(
         f'<div class="spec-row"><span class="k">{k}</span><span class="v">{e(v)}</span></div>'
