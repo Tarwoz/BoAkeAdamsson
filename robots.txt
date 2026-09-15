@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /images/opt/
+
+Sitemap: https://www.boakeadamsson.com/sitemap.xml
