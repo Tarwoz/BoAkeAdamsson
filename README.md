@@ -71,7 +71,18 @@ the same URLs. Old `#work/13`-style links still resolve to their new addresses.
 
 ## Before going live
 
-`/privacy/` and `/terms/` contain highlighted placeholders — legal name, address,
-organisationsnummer, VAT status, shipping countries, dispatch times — that must be
-filled in before the site is published. Search the partials for `class="todo"` to
-find every one.
+Seller identity and retention live in the `SELLER` and `RETENTION` constants at the
+top of `tools/build.py`, and feed both legal pages. Edit them there, not in the
+generated HTML.
+
+One placeholder is still outstanding in `tools/partials/terms.html`: the **VAT
+registration number**, or confirmation that the business is not VAT registered.
+It renders as a visibly marked chip so it cannot go live unnoticed. To find any
+remaining placeholder:
+
+```sh
+grep -rn 'class="todo"' tools/partials/
+```
+
+Both legal pages are drafted against the GDPR and Swedish consumer law but have not
+been reviewed by a lawyer.

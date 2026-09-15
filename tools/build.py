@@ -22,11 +22,41 @@ EMAIL = "ba.adamsson@gmail.com"
 PRIVACY_EMAIL = EMAIL
 IMG = "/images/opt/"
 
-# The one place VAT wording lives; it changes with the seller's registration.
-VAT_LINE = ('Whether Swedish VAT applies depends on the seller\'s registration and on '
-            'where the work is delivered. The exact VAT treatment for your purchase is '
-            'stated on the studio\'s written offer and on the invoice. '
-            '<span class="todo">[CONFIRM: prices shown include / exclude VAT]</span>')
+# Seller identity, in one place. Swedish e-commerce law (2002:562) requires a
+# trader to state these, and they appear on both legal pages.
+SELLER = {
+    "name": "Bo Åke Adamsson",
+    "form": "enskild näringsverksamhet (Swedish sole trader)",
+    # An enskild firma's organisationsnummer is the proprietor's personnummer.
+    # The last four digits are the part that enables identity fraud, so they are
+    # withheld on the public site and given in full on request and on invoices.
+    "orgnr": "410622-XXXX",
+    "street": "Tärna Prästgård 112",
+    "postal": "733 93 Sala",
+    "seat": "Sala, Västmanlands län",
+}
+
+SELLER_ADDRESS = (
+    f'{SELLER["name"]}<br>\n  {SELLER["form"]}<br>\n  {SELLER["street"]}<br>\n  '
+    f'{SELLER["postal"]}, Sweden<br>\n  Registered office: {SELLER["seat"]}<br>\n  '
+    f'Organisationsnummer: {SELLER["orgnr"]}'
+)
+
+# How long an inquiry that never becomes a sale is kept.
+RETENTION = "24 months"
+
+# Shown wherever the masked organisationsnummer appears, so the omission is
+# explained rather than looking like an oversight.
+# TODO: once the VAT registration number is to hand, state it here in full —
+# a VAT-registered trader is expected to publish it (e-handelslagen 2002:562 § 8).
+IDENTITY_NOTE = (
+    "The studio trades as an <strong>enskild näringsverksamhet</strong>, a Swedish "
+    "sole trader. For that business form the organisationsnummer is the proprietor's "
+    "own personal identity number, so the last four digits are withheld here to guard "
+    "against identity fraud. The full number, and the studio's Swedish VAT "
+    "registration number, are stated on every quote and invoice and are given in "
+    "full on request."
+)
 
 FILTERS = {
     "all": ("/", "Selected Works", None),
@@ -457,7 +487,11 @@ def legal_body(name):
     src = (PARTIALS / f"{name}.html").read_text()
     src = (src.replace("{{DATE}}", date.today().strftime("%d %B %Y"))
               .replace("{{PRIVACY_EMAIL}}", PRIVACY_EMAIL)
-              .replace("{{VAT_LINE}}", VAT_LINE)
+              .replace("{{SELLER_ADDRESS}}", SELLER_ADDRESS)
+              .replace("{{ORGNR}}", SELLER["orgnr"])
+              .replace("{{SELLER_NAME}}", SELLER["name"])
+              .replace("{{RETENTION}}", RETENTION)
+              .replace("{{IDENTITY_NOTE}}", IDENTITY_NOTE)
               .replace("{{EMAIL}}", EMAIL))
     return f'<main class="legal">\n{src}\n</main>'
 
