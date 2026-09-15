@@ -265,7 +265,7 @@
 
     /* Returns false when the path is not one this script handles, so the
        browser can follow the link normally: the about page, the legal pages,
-       admin, anything new. The about page is a leaf destination rather than a
+       anything new. The about page is a leaf destination rather than a
        browsing surface, so it is served as a real document instead of being
        inlined into all 69 other pages just to save one short navigation. */
     function headerHeight() {

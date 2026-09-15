@@ -14,24 +14,45 @@ it and generate everything else, so no generated file should ever be edited by h
 | `python3 tools/build.py` | Writes every HTML page, `sitemap.xml` and `robots.txt` from `artworks.json` and the image manifest. |
 
 Hand-written sources are `artworks.json`, `assets/css/site.css`, `assets/js/site.js`,
-`admin.html`, and the page copy in `tools/partials/`.
+and the page copy in `tools/partials/`.
 
 Generated, and safe to delete and rebuild: `index.html`, `404.html`, `sitemap.xml`,
 `robots.txt`, and the `about/ oil/ graphics/ sculpture/ work/ privacy/ terms/` directories.
 
 ## Everyday tasks
 
-**Change a price, dimension or year.** Open `/admin.html` on the live site (or over a
-local server, since it will not work from a `file://` URL), edit, hit Export, save the result
-over `artworks.json`, then:
+**Change a price, dimension or year.** Edit `artworks.json`. Each work is one block,
+and only the values to the right of the colons need touching:
+
+```json
+{
+  "id": 4,
+  "slug": "stora-gatan",
+  "title": "Stora Gatan",
+  "type": "oil",
+  "typeName": "Oil Painting",
+  "description": "",
+  "price": 56000,
+  "dimensions": "120 x 140 cm",
+  "year": 2022,
+  "image": "images/stora-gatan.jpg"
+}
+```
+
+`price` is a plain number with no currency symbol, spaces or thousands separators.
+`dimensions` is free text, and a work with none shows "On request" on its page.
+Leave `slug` alone once a work is published: it is that work's web address, and
+changing it breaks any link anyone has saved. Then:
 
 ```sh
+python3 -c "import json; json.load(open('artworks.json'))"   # catches a stray comma
 python3 tools/build.py
 git add -A && git commit -m "Update artwork details" && git push
 ```
 
-**Add a new artwork.** Put the master image in `images/`, add an entry to
-`artworks.json` with a unique `id` and a unique url-safe `slug`, then:
+**Add a new artwork.** Put the master image in `images/`, copy an existing block in
+`artworks.json` and edit it, giving it an `id` no other work uses and a `slug` of
+lowercase letters, numbers and hyphens only. Then:
 
 ```sh
 python3 tools/optimise_images.py     # needs Pillow: pip install Pillow
