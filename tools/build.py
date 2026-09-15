@@ -17,7 +17,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PARTIALS = ROOT / "tools" / "partials"
 
-SITE = "https://www.boakeadamsson.com"
+# Must match the CNAME file: GitHub Pages serves the apex and redirects www to
+# it, so canonicals, og:url and the sitemap all have to name the apex. Pointing
+# them at a host that only redirects muddles the signal Google is given.
+SITE = "https://boakeadamsson.com"
 EMAIL = "ba.adamsson@gmail.com"
 PRIVACY_EMAIL = EMAIL
 IMG = "/images/opt/"
