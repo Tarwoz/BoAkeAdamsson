@@ -1,0 +1,68 @@
+name: Check site
+
+# The generated pages are committed, so they can fall out of step with
+# artworks.json the moment someone edits it without running the build. Nothing
+# noticed that before this workflow: the site would keep serving the old price.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # tools/build.py and tools/check.py use only the standard library, so
+      # there is nothing to install. Pillow is needed for image work alone.
+
+      - name: Validate artworks.json
+        run: python3 tools/check.py
+
+      - name: Rebuild the site
+        run: python3 tools/build.py
+
+      - name: Fail if the committed pages are out of date
+        run: |
+          if ! git diff --quiet; then
+            echo "::error::The generated pages do not match artworks.json and the"
+            echo "::error::page copy. Run 'python3 tools/build.py' and commit the result."
+            echo
+            echo "Files that the build changed:"
+            git diff --name-only | sed 's/^/  /'
+            echo
+            echo "Diff:"
+            git --no-pager diff
+            exit 1
+          fi
+          echo "Generated pages are in step with their sources."
+
+      - name: Check every sitemap URL exists
+        run: |
+          python3 - <<'PY'
+          import sys, xml.etree.ElementTree as ET
+          from pathlib import Path
+          ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+          missing = []
+          for url in ET.parse("sitemap.xml").getroot().iter(ns + "url"):
+              loc = url.find(ns + "loc").text
+              rel = loc.split("boakeadamsson.com", 1)[1].lstrip("/")
+              target = Path(rel if rel.endswith(".html") else rel + "index.html")
+              if not target.exists():
+                  missing.append(loc)
+          if missing:
+              print("Sitemap lists URLs with no page behind them:")
+              for m in missing:
+                  print(" ", m)
+              sys.exit(1)
+          print("Every sitemap URL has a page.")
+          PY

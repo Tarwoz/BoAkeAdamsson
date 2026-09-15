@@ -10,7 +10,6 @@ Usage:  python3 tools/build.py
 """
 import html
 import json
-import shutil
 from datetime import date
 from pathlib import Path
 

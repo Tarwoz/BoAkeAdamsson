@@ -12,6 +12,7 @@ it and generate everything else, so no generated file should ever be edited by h
 |---|---|
 | `python3 tools/optimise_images.py` | Turns print masters in `images/` into web-sized AVIF/WebP/JPEG derivatives in `images/opt/`, and records dimensions and blur previews in `tools/image-manifest.json`. |
 | `python3 tools/build.py` | Writes every HTML page, `sitemap.xml` and `robots.txt` from `artworks.json` and the image manifest. |
+| `python3 tools/check.py` | Validates `artworks.json` before you build: duplicate ids, malformed slugs, prices typed as text, images that were never optimised. |
 
 Hand-written sources are `artworks.json`, `assets/css/site.css`, `assets/js/site.js`,
 and the page copy in `tools/partials/`.
@@ -45,10 +46,15 @@ Leave `slug` alone once a work is published: it is that work's web address, and
 changing it breaks any link anyone has saved. Then:
 
 ```sh
-python3 -c "import json; json.load(open('artworks.json'))"   # catches a stray comma
+python3 tools/check.py      # catches a stray comma, a duplicate id, a price typed as text
 python3 tools/build.py
 git add -A && git commit -m "Update artwork details" && git push
 ```
+
+If you forget the build step, CI catches it: the workflow rebuilds the site and
+fails the push when the committed pages no longer match `artworks.json`, naming
+every page that drifted. It cannot fix them for you, so run the two commands
+above and commit the result.
 
 **Add a new artwork.** Put the master image in `images/`, copy an existing block in
 `artworks.json` and edit it, giving it an `id` no other work uses and a `slug` of
@@ -56,6 +62,7 @@ lowercase letters, numbers and hyphens only. Then:
 
 ```sh
 python3 tools/optimise_images.py     # needs Pillow: pip install Pillow
+python3 tools/check.py
 python3 tools/build.py
 ```
 
@@ -82,6 +89,17 @@ Treat that as a backstop, not a backup: keep your own copies of the masters.
 
 `tools/optimise_images.py` carries existing manifest entries over when a master is
 absent, so it only ever has work to do for images that are genuinely new.
+
+## Continuous integration
+
+`.github/workflows/check.yml` runs on every push and pull request. It validates
+`artworks.json`, rebuilds the site, and fails if the committed pages differ from
+what the build produces, which is the one mistake this repository makes easy:
+editing the data and forgetting that the pages are generated from it. It also
+checks that every URL in `sitemap.xml` has a page behind it.
+
+It needs no dependencies, because the build and the validator use only the Python
+standard library. Pillow is required for image work alone.
 
 ## Structure
 
