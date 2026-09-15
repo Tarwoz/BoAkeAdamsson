@@ -1,4 +1,4 @@
-/* Bo Åke Adamsson — site behaviour.
+/* Bo Åke Adamsson site behaviour.
  *
  * Every page here is a real, statically generated HTML document: the gallery,
  * each artwork, and the about page all render fully without JavaScript, which
@@ -34,6 +34,12 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    /* A dimensions field counts as recorded only if it holds more than a
+       dash or a blank; the catalogue has used several placeholders over time. */
+    function hasSize(d) {
+        return !!(d && d.replace(/[\s\u2010-\u2015-]/g, '') !== '');
+    }
+
     function priceDisplay(price, type) {
         if (type === 'sculpture' || price > 10000) return 'Price on Request';
         return '€' + price.toLocaleString('en-US');
@@ -64,7 +70,7 @@
     /* ---------- progressive reveal ---------- */
 
     /* An image that is already in the browser cache fires no load event, so
-       check complete() first — otherwise cached images would stay invisible. */
+       check complete() first, otherwise cached images would stay invisible. */
     function watchImages(root) {
         [].forEach.call((root || document).querySelectorAll('.ph'), function (ph) {
             var img = ph.querySelector('img');
@@ -105,10 +111,9 @@
         var priceHtml = p === 'Price on Request'
             ? '<span class="price request">On Request</span>'
             : '<span class="price">' + p + '</span>';
-        var dims = [art.dimensions, art.year].filter(function (x) {
-            return x && x !== '—';
-        }).join(' · ') || art.year;
-        var alt = art.title + ' — ' + art.typeName + ' by Bo Åke Adamsson';
+        var dims = [hasSize(art.dimensions) ? art.dimensions : null, art.year]
+            .filter(Boolean).join(' · ');
+        var alt = art.title + ', ' + art.typeName.toLowerCase() + ' by Bo Åke Adamsson';
         return '<a class="piece reveal" href="/work/' + art.slug + '/" data-slug="' + art.slug + '"' +
             ' aria-label="View ' + escapeHtml(art.title) + ' in detail">' +
             '<figure class="ph">' + picture(art, alt, SIZES_GALLERY) +
@@ -189,8 +194,7 @@
         var onRequest = p === 'Price on Request';
         var rows = [['Medium', art.typeName]];
         // Not every work has a recorded size; say so rather than drop the row.
-        rows.push(['Dimensions', (art.dimensions && art.dimensions !== '—')
-            ? art.dimensions : 'On request']);
+        rows.push(['Dimensions', hasSize(art.dimensions) ? art.dimensions : 'On request']);
         rows.push(['Year', art.year]);
         var specRows = rows.map(function (kv) {
             return '<div class="spec-row"><span class="k">' + kv[0] + '</span>' +
@@ -199,7 +203,7 @@
             '<div class="spec-row"><span class="k">Price</span>' +
             '<span class="v price-lg">' + p + '</span></div>';
 
-        var alt = art.title + ' — ' + art.typeName + ' by Bo Åke Adamsson';
+        var alt = art.title + ', ' + art.typeName.toLowerCase() + ' by Bo Åke Adamsson';
         var desc = art.description ? '<p class="work-desc">' + escapeHtml(art.description) + '</p>' : '';
         var avail = onRequest
             ? 'This work is available. Send an inquiry below and the studio will respond personally with the price and delivery details.'
@@ -217,7 +221,7 @@
     function inquiryForm(art) {
         return '<form class="inquiry-form" data-inquiry="' + escapeHtml(art.title) + '">' +
             '<h3>Inquire about this work</h3>' +
-            '<p class="sub">Your message goes straight to Bo Åke’s studio — no galleries, no middlemen.</p>' +
+            '<p class="sub">Your message goes straight to Bo Åke’s studio. No galleries, no middlemen.</p>' +
             '<div class="form-group"><label for="inq-name">Your Name</label>' +
             '<input type="text" id="inq-name" name="name" required placeholder="Enter your full name" autocomplete="name"></div>' +
             '<div class="form-group"><label for="inq-email">Email Address</label>' +
@@ -260,7 +264,10 @@
     }
 
     /* Returns false when the path is not one this script handles, so the
-       browser can follow the link normally (legal pages, admin, anything new). */
+       browser can follow the link normally: the about page, the legal pages,
+       admin, anything new. The about page is a leaf destination rather than a
+       browsing surface, so it is served as a real document instead of being
+       inlined into all 69 other pages just to save one short navigation. */
     function render(path, push, restoreScroll) {
         var work = path.match(/^\/work\/([a-z0-9-]+)\/?$/);
         if (work) {
@@ -268,11 +275,7 @@
             var art = bySlug[work[1]];
             showView('work');
             setNav(null);
-            setMeta(art.title + ' — Bo Åke Adamsson', '/work/' + art.slug + '/');
-        } else if (path === '/about/') {
-            showView('about');
-            setNav('about');
-            setMeta('About Bo Åke Adamsson — Swedish Painter & Sculptor', '/about/');
+            setMeta(art.title + ' | Bo Åke Adamsson', '/work/' + art.slug + '/');
         } else {
             var filter = null;
             Object.keys(FILTER_PATH).forEach(function (k) {
@@ -283,8 +286,8 @@
             showView('home');
             setNav(filter === 'all' ? 'gallery' : filter);
             setMeta(filter === 'all'
-                ? 'Bo Åke Adamsson — Swedish Painter & Sculptor | Originals, Bronzes, Lithographs'
-                : FILTER_TITLES[filter] + ' — Bo Åke Adamsson', path);
+                ? 'Bo Åke Adamsson, Swedish Painter & Sculptor | Originals, Bronzes, Lithographs'
+                : FILTER_TITLES[filter] + ' | Bo Åke Adamsson', path);
         }
 
         if (push) history.pushState({ path: path }, '', path);
@@ -293,7 +296,7 @@
         return true;
     }
 
-    /* Older shared links used #work/13, #about, #oil — keep them working. */
+    /* Older shared links used #work/13, #about, #oil. Keep them working. */
     function legacyHashPath() {
         var h = location.hash.replace(/^#/, '');
         if (!h) return null;
@@ -350,7 +353,7 @@
             btn.innerText = label === 'Subscribe' ? 'Subscribed' : 'Inquiry Sent';
             status.className = 'form-status ok';
             status.textContent = label === 'Subscribe'
-                ? 'Thank you — you are on the list.'
+                ? 'Thank you, you are on the list.'
                 : 'Thank you. Your message is with the studio and you will hear back personally.';
         } catch (err) {
             btn.innerText = label;
@@ -379,8 +382,12 @@
 
     var legacy = legacyHashPath();
     if (legacy) {
-        history.replaceState({ path: legacy }, '', legacy);
-        render(legacy, false);
+        if (render(legacy, false)) {
+            history.replaceState({ path: legacy }, '', legacy);
+        } else {
+            // A route this script does not render, e.g. #about -> /about/.
+            location.replace(legacy);
+        }
     } else {
         // The page arrived fully rendered; just mark the state as ours so
         // popstate knows it can handle the way back.

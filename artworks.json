@@ -631,7 +631,7 @@
     "typeName": "Book",
     "description": "",
     "price": 45,
-    "dimensions": "—",
+    "dimensions": "",
     "year": 2006,
     "image": "images/adamsson-book.png"
   },

@@ -50,7 +50,7 @@ RETENTION = "24 months"
 
 # Shown wherever the masked organisationsnummer appears, so the omission is
 # explained rather than looking like an oversight.
-# TODO: once the VAT registration number is to hand, state it here in full —
+# TODO: state the VAT registration number here in full once it is to hand;
 # a VAT-registered trader is expected to publish it (e-handelslagen 2002:562 § 8).
 IDENTITY_NOTE = (
     "The studio trades as an <strong>enskild näringsverksamhet</strong>, a Swedish "
@@ -74,6 +74,12 @@ SIZES_HERO = "(max-width:900px) 100vw, 57vw"
 SIZES_SPLIT = "(max-width:900px) 92vw, 40vw"
 
 e = html.escape
+
+
+def has_size(d):
+    """A dimensions field counts as recorded only if it holds more than a dash
+    or a blank; the catalogue has used several placeholders over time."""
+    return bool(d and d.strip(" \u2010\u2011\u2012\u2013\u2014\u2015-"))
 
 
 def price_display(price, type_):
@@ -130,7 +136,7 @@ def header(active):
     return f"""<a class="skip-link" href="#main">Skip to content</a>
 <header class="site">
     <div class="header-inner">
-        <a href="/" class="sig-link" aria-label="Bo Åke Adamsson — home">
+        <a href="/" class="sig-link" aria-label="Bo Åke Adamsson, home">
             <img src="/images/signature.png" alt="Bo Åke Adamsson" width="420" height="120">
         </a>
         <nav class="main" aria-label="Main navigation"><ul>{items}</ul></nav>
@@ -257,8 +263,8 @@ def gallery_card(art, rec):
     price_html = ('<span class="price request">On Request</span>'
                   if p == "Price on Request" else f'<span class="price">{p}</span>')
     dims = " · ".join(x for x in (art["dimensions"], str(art["year"]))
-                           if x and x != "—")
-    alt = f'{art["title"]} — {art["typeName"]} by Bo Åke Adamsson'
+                           if x and has_size(x))
+    alt = f'{art["title"]}, {art["typeName"].lower()} by Bo Åke Adamsson'
     return f"""<a class="piece reveal" href="/work/{art['slug']}/" data-slug="{art['slug']}" aria-label="View {e(art['title'])} in detail">
     <figure class="ph"{ph_style(rec)}>{picture(rec, alt, SIZES_GALLERY)}<span class="tag">{e(art['typeName'])}</span></figure>
     <figcaption>
@@ -294,7 +300,7 @@ def home_body(artworks, manifest, active, hero):
         cards = '<p class="empty">No works in this category at the moment.</p>'
 
     hero_rec = manifest[hero["image"].split("/")[-1]]
-    hero_alt = f'{hero["title"]} — oil painting by Bo Åke Adamsson'
+    hero_alt = f'{hero["title"]}, oil painting by Bo Åke Adamsson'
     about_rec = manifest["about-photo.jpg"]
     title = FILTERS[active][1]
 
@@ -310,12 +316,12 @@ def home_body(artworks, manifest, active, hero):
     </div>
     <div class="hero-figure ph"{ph_style(hero_rec)}>
         <a href="/work/{hero['slug']}/" aria-label="View {e(hero['title'])} in detail">{picture(hero_rec, hero_alt, SIZES_HERO, eager=True)}</a>
-        <div class="cap"><span class="rd"></span> {e(hero['title'])} — Oil on canvas, {e(hero['dimensions'])}, {hero['year']}</div>
+        <div class="cap"><span class="rd"></span> {e(hero['title'])} Oil on canvas, {e(hero['dimensions'])}, {hero['year']}</div>
     </div>
 </section>
 
 <section class="section" style="padding-bottom:2.5rem;">
-    <p class="intro-line">A body of work built on <em>bravado and tenderness</em> in equal measure — this collection holds the pieces currently available to acquire, each photographed in the studio where it was made.</p>
+    <p class="intro-line">A body of work built on <em>bravado and tenderness</em> in equal measure. This collection holds the pieces currently available to acquire, each photographed in the studio where it was made.</p>
 </section>
 """
 
@@ -327,7 +333,7 @@ def home_body(artworks, manifest, active, hero):
             <div class="eyebrow">The Collection</div>
             <h2 id="collection-title">{title}</h2>
         </div>
-        <p>Every piece comes directly from the artist's studio, catalogued with its medium, year and — where they have been recorded — its measurements. Click any work to see it in full and inquire.</p>
+        <p>Every piece comes directly from the artist's studio. Click any work to see it full size and to send an inquiry.</p>
     </div>
     {filter_bar(active, counts)}
     <div id="gallery" class="gallery">
@@ -354,8 +360,6 @@ def home_body(artworks, manifest, active, hero):
     <a href="mailto:{EMAIL}" class="btn">Contact the Studio</a>
 </section>
 </main>
-
-<main id="view-about" class="view"></main>
 <main id="view-work" class="view">
     <div class="work-top">
         <a href="/" class="back-link" id="work-back">← Back to Collection</a>
@@ -371,7 +375,7 @@ def home_body(artworks, manifest, active, hero):
 def inquiry_form(art):
     return f"""<form class="inquiry-form" data-inquiry="{e(art['title'])}">
     <h3>Inquire about this work</h3>
-    <p class="sub">Your message goes straight to Bo Åke's studio — no galleries, no middlemen.</p>
+    <p class="sub">Your message goes straight to Bo Åke's studio. No galleries, no middlemen.</p>
     <div class="form-group"><label for="inq-name">Your Name</label>
         <input type="text" id="inq-name" name="name" required placeholder="Enter your full name" autocomplete="name"></div>
     <div class="form-group"><label for="inq-email">Email Address</label>
@@ -389,9 +393,8 @@ def work_body(art, rec, prev, nxt):
     p = price_display(art["price"], art["type"])
     on_request = p == "Price on Request"
     rows = [("Medium", art["typeName"])]
-    rows.append(("Dimensions", art["dimensions"]
-                 if art["dimensions"] and art["dimensions"] != "—"
-                 else "On request"))
+    rows.append(("Dimensions",
+                 art["dimensions"] if has_size(art["dimensions"]) else "On request"))
     rows.append(("Year", str(art["year"])))
     specs = "".join(
         f'<div class="spec-row"><span class="k">{k}</span><span class="v">{e(v)}</span></div>'
@@ -400,7 +403,7 @@ def work_body(art, rec, prev, nxt):
     specs += (f'<div class="spec-row"><span class="k">Price</span>'
               f'<span class="v price-lg">{p}</span></div>')
 
-    alt = f'{art["title"]} — {art["typeName"]} by Bo Åke Adamsson'
+    alt = f'{art["title"]}, {art["typeName"].lower()} by Bo Åke Adamsson'
     desc = f'<p class="work-desc">{e(art["description"])}</p>' if art["description"] else ""
     avail = ("This work is available. Send an inquiry below and the studio will respond "
              "personally with the price and delivery details." if on_request else
@@ -432,13 +435,12 @@ def work_body(art, rec, prev, nxt):
     <section class="section" id="collection" style="padding-top:4rem;">
         <div class="section-head">
             <div><div class="eyebrow">The Collection</div><h2 id="collection-title">Selected Works</h2></div>
-            <p>Every piece comes directly from the artist's studio, catalogued with its medium, year and measurements.</p>
+            <p>Every piece comes directly from the artist's studio.</p>
         </div>
         <div class="filter-bar" role="group" aria-label="Filter artworks"></div>
         <div id="gallery" class="gallery"></div>
     </section>
-</main>
-<main id="view-about" class="view"></main>"""
+</main>"""
 
 
 def about_body(manifest):
@@ -470,7 +472,7 @@ def about_body(manifest):
     <section class="section" id="collection" style="padding-top:4rem;">
         <div class="section-head">
             <div><div class="eyebrow">The Collection</div><h2 id="collection-title">Selected Works</h2></div>
-            <p>Every piece comes directly from the artist's studio, catalogued with its medium, year and measurements.</p>
+            <p>Every piece comes directly from the artist's studio.</p>
         </div>
         <div class="filter-bar" role="group" aria-label="Filter artworks"></div>
         <div id="gallery" class="gallery"></div>
@@ -552,7 +554,7 @@ def work_jsonld(art, rec):
     }
     if art["description"]:
         node["description"] = art["description"]
-    if art["dimensions"] and art["dimensions"] != "—":
+    if has_size(art["dimensions"]):
         node["size"] = art["dimensions"]
         parts = art["dimensions"].replace("cm", "").strip().split("×")
         if len(parts) >= 2:
@@ -608,13 +610,13 @@ def main():
     # Gallery pages (all + one per medium)
     for key, (path, label, _) in FILTERS.items():
         is_home = key == "all"
-        title = ("Bo Åke Adamsson — Swedish Painter & Sculptor | Originals, Bronzes, Lithographs"
+        title = ("Bo Åke Adamsson, Swedish Painter & Sculptor | Originals, Bronzes, Lithographs"
                  if is_home else f"{label} by Bo Åke Adamsson | Available from the Studio")
-        desc = ("Bo Åke Adamsson — Swedish painter, sculptor and graphic artist. Explore original "
+        desc = ("Bo Åke Adamsson is a Swedish painter, sculptor and graphic artist. Explore original "
                 "oil paintings, bronze sculptures, and lithographs available for purchase directly "
                 "from the artist's studio." if is_home else
                 f"{label} by Swedish artist Bo Åke Adamsson, available directly from the studio. "
-                f"Each work catalogued with its medium, year and measurements.")
+                f"Each work is catalogued with its medium and year, and sold directly by the artist.")
         ld = [PERSON] if is_home else [breadcrumbs([("Gallery", "/"), (label, path)])]
         if is_home:
             ld.append({
@@ -640,12 +642,12 @@ def main():
         nxt = artworks[(i + 1) % len(artworks)]
         p = price_display(art["price"], art["type"])
         desc = art["description"] or (
-            f'{art["title"]} — {art["typeName"].lower()} by Swedish artist Bo Åke Adamsson'
-            + (f', {art["dimensions"]}' if art["dimensions"] and art["dimensions"] != "—" else "")
+            f'{art["title"]}, {art["typeName"].lower()} by Swedish artist Bo Åke Adamsson'
+            + (f', {art["dimensions"]}' if has_size(art["dimensions"]) else "")
             + f', {art["year"]}. {p if p != "Price on Request" else "Price on request"}. '
               'Available directly from the artist\'s studio.')
         write(f"/work/{art['slug']}/index.html", layout(
-            title=f'{art["title"]} — {art["typeName"]} by Bo Åke Adamsson',
+            title=f'{art["title"]} | {art["typeName"]} by Bo Åke Adamsson',
             description=desc[:300], path=f"/work/{art['slug']}/",
             body=work_body(art, rec, prev, nxt),
             jsonld=[work_jsonld(art, rec),
@@ -657,7 +659,7 @@ def main():
 
     # About
     write("/about/index.html", layout(
-        title="About Bo Åke Adamsson — Swedish Painter & Sculptor",
+        title="About Bo Åke Adamsson | Swedish Painter & Sculptor",
         description="Bo Åke Adamsson studied at the Real Academia de Bellas Artes in Barcelona "
                     "and bronze casting at Stockholm's Royal Academy. His work is held by the "
                     "Swedish National Art Museum and royal collections across Europe.",
@@ -668,28 +670,28 @@ def main():
 
     # Legal
     for name, title, desc in (
-        ("privacy", "Privacy Policy — Bo Åke Adamsson",
+        ("privacy", "Privacy Policy | Bo Åke Adamsson",
          "How this website handles personal data: what the inquiry and newsletter forms "
          "collect, who processes it, how long it is kept, and your rights under the GDPR."),
-        ("terms", "Terms of Sale — Bo Åke Adamsson",
+        ("terms", "Terms of Sale | Bo Åke Adamsson",
          "Terms for buying original artwork directly from Bo Åke Adamsson's studio: "
          "ordering, prices, payment, delivery, the 14-day right of withdrawal, and authenticity."),
     ):
         write(f"/{name}/index.html", layout(
             title=title, description=desc, path=f"/{name}/",
             body=legal_body(name),
-            jsonld=[breadcrumbs([("Gallery", "/"), (title.split(" — ")[0], f"/{name}/")])],
+            jsonld=[breadcrumbs([("Gallery", "/"), (title.split(" | ")[0], f"/{name}/")])],
             active=None))
         pages += 1
 
     # 404
     write("/404.html", layout(
-        title="Page not found — Bo Åke Adamsson",
+        title="Page not found | Bo Åke Adamsson",
         description="That page does not exist. Browse the collection instead.",
         path="/404.html", robots="noindex, follow",
         body=f"""<main class="legal" style="text-align:center;">
     <h1>Not found</h1>
-    <p class="updated" style="border:0;">The page you were looking for isn't here — it may have been a work that has since sold.</p>
+    <p class="updated" style="border:0;">The page you were looking for isn't here. It may have been a work that has since sold.</p>
     <p><a class="btn solid" href="/" style="margin-top:1rem;">View the Collection</a></p>
 </main>"""))
     pages += 1
