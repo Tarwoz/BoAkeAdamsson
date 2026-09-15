@@ -268,6 +268,30 @@
        admin, anything new. The about page is a leaf destination rather than a
        browsing surface, so it is served as a real document instead of being
        inlined into all 69 other pages just to save one short navigation. */
+    function headerHeight() {
+        var h = document.querySelector('header.site');
+        return h ? Math.round(h.getBoundingClientRect().height) : 0;
+    }
+
+    /* A different page wants the top of it, and wants it at once: the stylesheet
+       scrolls smoothly, and animating a long way up after the content has
+       already been swapped underneath reads as the page running away. */
+    function jumpToTop() {
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+
+    /* Changing filter changes what the collection holds, not which page you are
+       on, so throwing the reader back up to the hero loses their place for
+       nothing. Put the collection heading just under the sticky header instead,
+       which keeps the filter bar and the first row of the new selection both in
+       view, and costs no movement at all when they are already there. */
+    function scrollToCollection() {
+        var el = byId('collection');
+        if (!el) { jumpToTop(); return; }
+        var top = el.getBoundingClientRect().top + window.pageYOffset - headerHeight() - 12;
+        window.scrollTo(0, Math.max(0, Math.round(top)));
+    }
+
     function render(path, push, restoreScroll) {
         var work = path.match(/^\/work\/([a-z0-9-]+)\/?$/);
         if (work) {
@@ -291,7 +315,10 @@
         }
 
         if (push) history.pushState({ path: path }, '', path);
-        if (!restoreScroll) window.scrollTo(0, 0);
+        if (!restoreScroll) {
+            if (work) jumpToTop();
+            else scrollToCollection();
+        }
         watchReveals();
         return true;
     }
@@ -318,6 +345,18 @@
         if (a.origin && a.origin !== location.origin) return;
         if (a.getAttribute('href') && a.getAttribute('href').charAt(0) === '#') return;
         if (render(a.pathname, true)) e.preventDefault();
+    });
+
+    /* Boot only runs on a fresh document, so an old #work/13 link followed from
+       inside the site changes the hash without re-entering the router. The
+       original site listened for this; keep that behaviour. Anchors the page
+       uses itself, such as #collection, are not legacy routes and fall through
+       to the browser. */
+    window.addEventListener('hashchange', function () {
+        var legacy = legacyHashPath();
+        if (!legacy) return;
+        if (render(legacy, false)) history.replaceState({ path: legacy }, '', legacy);
+        else location.replace(legacy);
     });
 
     window.addEventListener('popstate', function () {
