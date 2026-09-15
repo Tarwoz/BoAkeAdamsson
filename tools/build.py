@@ -699,7 +699,6 @@ def main():
     # robots + sitemap
     write("/robots.txt", f"""User-agent: *
 Allow: /
-Disallow: /admin.html
 Disallow: /images/opt/
 
 Sitemap: {SITE}/sitemap.xml
