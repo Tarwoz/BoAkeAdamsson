@@ -188,7 +188,9 @@
         var p = priceDisplay(art.price, art.type);
         var onRequest = p === 'Price on Request';
         var rows = [['Medium', art.typeName]];
-        if (art.dimensions && art.dimensions !== '—') rows.push(['Dimensions', art.dimensions]);
+        // Not every work has a recorded size; say so rather than drop the row.
+        rows.push(['Dimensions', (art.dimensions && art.dimensions !== '—')
+            ? art.dimensions : 'On request']);
         rows.push(['Year', art.year]);
         var specRows = rows.map(function (kv) {
             return '<div class="spec-row"><span class="k">' + kv[0] + '</span>' +
